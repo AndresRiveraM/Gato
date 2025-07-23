@@ -1,1 +1,60 @@
-var _0x293a=["querySelectorAll",".casilla","textContent","turno","X","O","classList","add","ganador","Ganador: ","innerHTML","¡Empate!","click","removeEventListener","forEach"];document.addEventListener("DOMContentLoaded",()=>{let e="X",t=document[_0x293a[0]](_0x293a[1]);const r=document.getElementById(_0x293a[3]),a=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];function n(){return[...t].every(e=>e[_0x293a[2]]!=="")}function c(){for(let r of a){const[a,n,c]=r;if(t[a][_0x293a[2]]&&t[a][_0x293a[2]]===t[n][_0x293a[2]]&&t[a][_0x293a[2]]===t[c][_0x293a[2]]){r=document.getElementById(_0x293a[8]),r[_0x293a[10]]=_0x293a[9]+t[a][_0x293a[2]];t[_0x293a[14]](e=>{e[_0x293a[13]](_0x293a[12],l)});return true}}if(n()){r[_0x293a[10]]=_0x293a[11];return true}return false}function l(r){if(r.target[_0x293a[2]]===""){r.target[_0x293a[2]]=e,e=e===_0x293a[4]?_0x293a[5]:_0x293a[4];document.getElementById(_0x293a[3])[_0x293a[2]]=e,c()}}t[_0x293a[14]](e=>{e[_0x293a[12]](_0x293a[12],l)})});
+document.addEventListener("DOMContentLoaded", () => {
+  const gato = document.getElementById("gato");
+  const estado = document.getElementById("estado");
+  const reiniciar = document.getElementById("reiniciar");
+
+  let turno = "X";
+  let celdas = Array(9).fill(null);
+
+  function crearTablero() {
+    gato.innerHTML = "";
+    celdas = Array(9).fill(null);
+    turno = "X";
+    estado.textContent = "Turno de X";
+
+    for (let i = 0; i < 9; i++) {
+      const celda = document.createElement("div");
+      celda.classList.add("celda");
+      celda.dataset.index = i;
+      celda.addEventListener("click", jugar);
+      gato.appendChild(celda);
+    }
+  }
+
+  function jugar(e) {
+    const index = e.target.dataset.index;
+
+    if (celdas[index] || obtenerGanador()) return;
+
+    celdas[index] = turno;
+    e.target.textContent = turno;
+
+    const ganador = obtenerGanador();
+    if (ganador) {
+      estado.textContent = `Ganó ${ganador}`;
+    } else if (!celdas.includes(null)) {
+      estado.textContent = "Empate";
+    } else {
+      turno = turno === "X" ? "O" : "X";
+      estado.textContent = `Turno de ${turno}`;
+    }
+  }
+
+  function obtenerGanador() {
+    const combinaciones = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+
+    for (const [a, b, c] of combinaciones) {
+      if (celdas[a] && celdas[a] === celdas[b] && celdas[a] === celdas[c]) {
+        return celdas[a];
+      }
+    }
+    return null;
+  }
+
+  reiniciar.addEventListener("click", crearTablero);
+  crearTablero();
+});
